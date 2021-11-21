@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="clr-namespace:MiniProyectoALG.Views" 
+                xmlns:model="clr-namespace:MiniProyectoALG.Models"
+            xmlns:viewModels="clr-namespace:MiniProyectoALG.ViewModels" xmlns:local="clr-namespace:MiniProyectoALG.Utils"
+            x:Class="MiniProyectoALG.MainPage">
+    <TabbedPage.Resources>
+        <local:EstadoConverter x:Key="EstadoConverter" />
+    </TabbedPage.Resources>
+    <TabbedPage.BindingContext>
+        <viewModels:MainPageViewModel/>
+    </TabbedPage.BindingContext>
+    <ContentPage Title="{Binding Page1Name}" >
+          
+          
+                <TableView VerticalOptions="Fill">
+                    <TableRoot>
+                        <TableSection Title="Datos" TextColor="Black">
+                            <EntryCell Label="Nombre Tarea" LabelColor="Black"  Placeholder="Nombre Tarea" Text="{Binding Tarea.NombreTarea}"/>
+                            <EntryCell Label="Descripcion" LabelColor="Black" Placeholder="Descripcion" Text="{Binding Tarea.Descripcion}"/>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="Fecha Tarea" VerticalOptions="Center" TextColor="Black"/>
+                            <DatePicker Date="{Binding Tarea.FechaVence}" TextColor="Black"/>
+                        </StackLayout>
+                        
+                    </ViewCell>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Button Text="Limpiar"  BackgroundColor="LightPink" CornerRadius="10"
+                                    Grid.Row="1" Command="{Binding LimpiarCommand}" />
+
+                            <Button Text="Crear Tarea"  BackgroundColor="LightGreen" CornerRadius="10"
+                                     Grid.Row="1" Grid.Column="1" Command="{Binding CrearTareaCommand}" />
+                        </Grid>
+                    </ViewCell>
+                </TableSection>
+                      
+                    </TableRoot>
+                </TableView>
+                   
+               
+        
+     
+    </ContentPage>
+
+    <ContentPage Title="{Binding Page2Name}" >
+        <StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Filtros:" VerticalOptions="Center" TextColor="Black"/>
+                <Picker ItemsSource="{Binding Estatus}" HorizontalOptions="FillAndExpand" ItemDisplayBinding="{Binding .}" SelectedIndex="{Binding indexEstatus}" />
+                <Button Text="Refrescar" CornerRadius="10" HorizontalOptions="EndAndExpand" Command="{Binding RefrescarListaCommand}"/>
+            </StackLayout>
+            <ListView ItemsSource="{Binding Lista}" BackgroundColor="Lightgray" 
+                       SeparatorColor="Black"  HasUnevenRows="True" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell >
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Borrar"
+                                                   IconImageSource="delete.png"
+                                                   BackgroundColor="LightPink"
+                                                     Invoked="Ondelete"  CommandParameter="{Binding ID}"
+                                                    />                 
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Completada"
+                                                   IconImageSource="editar.png"
+                                                   BackgroundColor="LightGreen"
+                                                   Invoked="OnEdit"
+                                                   CommandParameter="{Binding ID}"
+                                                    />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <Frame HasShadow="True" CornerRadius="10" Margin="5" x:DataType="model:ListaDeTarea" BorderColor="Black"  >
+                                    <StackLayout>
+                                        <Label  TextColor="Black"   FontSize="Body">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="ID: " TextColor="Black" FontAttributes="Bold"/>
+                                                    <Span Text="{Binding ID}"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        
+                                        <StackLayout Orientation="Horizontal">
+                                           
+                                            <Label TextColor="Black" HorizontalOptions="Start" 
+                                                   FontSize="Body">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Fecha Creada: " TextColor="Black" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding Fecha,StringFormat='{0:M/d/yyyy}'}}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                            <Label TextColor="Black" HorizontalOptions="EndAndExpand" 
+                                                   FontSize="Body">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Fecha Vencimiento: " TextColor="Black" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding FechaVence,StringFormat='{0:M/d/yyyy}'}}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label  TextColor="Black" HorizontalOptions="Start"  FontSize="Body">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Tarea: " TextColor="Black" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding NombreTarea}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                            <Label TextColor="Black"
+                                                   HorizontalOptions="EndAndExpand"  FontSize="Body">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Estado: " TextColor="Black" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding Completada,Converter={StaticResource EstadoConverter}}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </StackLayout>
+                                        <Label Text="{Binding Descripcion}" TextColor="Black"  FontSize="Body" FontAttributes="Bold" />
+                                    </StackLayout>
+                                </Frame>
+                            </SwipeView>
+                          
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>
